@@ -1,0 +1,97 @@
+openapi: 3.0.1
+info:
+  title: Shop API
+  description: Description
+  version: 1.0.0
+# servers:
+# - url: http://localhost:3003/
+tags:
+- name: products
+  description: Operations with products
+paths:
+  /product/{productId}:
+    get:
+      tags:
+      - products
+      summary: Get product by id
+      description: Get product by id
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfProducts'
+        404:
+          description: A product with the specified ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          
+  /products:
+    get:
+      tags:
+      - products
+      summary: Get list of products
+      description: Get list of products
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        title:
+          type: string
+          example: "Product title"
+        description:
+          type: string
+          example: "Product description"
+        price:
+          type: integer
+          format: int64
+          example: 100.5
+        count:
+          type: integer
+          format: int64
+          example: 10
+        imageLink:
+          type: string
+    ArrayOfProducts:
+      type: array
+      items:
+          $ref: '#/components/schemas/Product'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 404
+        message:
+          type: string
+          example: "No data was found"
+      required:
+        - code
+        - message      
