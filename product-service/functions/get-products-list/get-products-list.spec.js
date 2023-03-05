@@ -1,7 +1,7 @@
 import {
     jest, describe, expect, test,
 } from '@jest/globals';
-import * as data from '../../data';
+import * as dal from '../../dal';
 import getProductsList from './get-products-list';
 
 const mockedProducts = [
@@ -22,8 +22,8 @@ const mockedProducts = [
 ]
 
 jest
-    .spyOn(data, 'getData')
-    .mockImplementation(() => mockedProducts)
+    .spyOn(dal, 'getData')
+    .mockImplementation(() => Promise.resolve(mockedProducts))
 
 describe('getProductsList', () => {
     test('should return products list', async () => {
