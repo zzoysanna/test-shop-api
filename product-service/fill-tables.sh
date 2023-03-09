@@ -35,7 +35,7 @@ function createJsonProduct {
   aws dynamodb put-item --table-name $stocksTable --item "$STOCK_JSON_STRING"
 }
 
-for i in 1 2 3 4 5 6 7 8 9
+for i in {1...9}
 do
    createJsonProduct
 done
