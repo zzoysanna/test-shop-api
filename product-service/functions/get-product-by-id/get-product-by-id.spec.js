@@ -2,28 +2,15 @@ import {
     jest, describe, expect, test
 } from '@jest/globals';
 import getProductById from '../get-product-by-id/get-product-by-id';
-import * as data from '../../data';
+import * as dal from '../../dal';
 
-const mockedProducts = [
-    {
-        id: '1',
-        title: 'Mock title 1',
-        description: 'Mock description 1',
-        price: 12.99,
-        count: 20
-    },
-    {
-        id: '2',
-        title: 'Mock title 2',
-        description: 'Mock description 2',
-        price: 12.99,
-        count: 20
-    }
-]
-
-jest
-    .spyOn(data, 'getData')
-    .mockImplementation(() => mockedProducts)
+const mockedProduct = {
+    id: '2',
+    title: 'Mock title 1',
+    description: 'Mock description 1',
+    price: 12.99,
+    count: 20
+};
 
 describe('getProductById', () => {
     test('should get existing product by id', async () => {
@@ -32,9 +19,12 @@ describe('getProductById', () => {
                 productId: '2'
             }
         };
+        jest
+            .spyOn(dal, 'getItemData')
+            .mockImplementation(() => Promise.resolve(mockedProduct))
         getProductById(mockRequest).then(
             res => {
-                expect(JSON.parse(res.body)).toEqual(mockedProducts[1]);
+                expect(JSON.parse(res.body)).toEqual(mockedProduct);
                 expect(res.statusCode).toEqual(200);
             }
         );
@@ -46,6 +36,9 @@ describe('getProductById', () => {
                 productId: 'test'
             }
         };
+        jest
+            .spyOn(dal, 'getItemData')
+            .mockImplementation(() => Promise.resolve(null))
         getProductById(mockRequest).then(
             res => {
                 expect(res.statusCode).toEqual(404);

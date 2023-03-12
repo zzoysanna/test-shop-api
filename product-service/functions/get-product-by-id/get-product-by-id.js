@@ -1,10 +1,11 @@
-import {getData} from "../../data"
 import {errorResponse, formatJSONResponse} from "../../utils";
+import {getItemData} from '../../dal'
 
 export const getProductById = async (event) => {
     const id = event.pathParameters.productId;
     try {
-        const currentProduct = getData().find(item => item.id === id);
+        console.log('Get product by id: ', id)
+        const currentProduct = await getItemData(id);
         return currentProduct
             ? formatJSONResponse(currentProduct)
             : errorResponse('A product with the specified ID was not found', 404);

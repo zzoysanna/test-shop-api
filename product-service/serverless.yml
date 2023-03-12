@@ -7,15 +7,34 @@ frameworkVersion: '3'
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
+  - serverless-dotenv-plugin
+
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: eu-central-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [ productsTable, Arn ]
+        - "Fn::GetAtt": [ stocksTable, Arn ]
 
 functions:
   products:
     handler: functions/get-products-list/get-products-list.getProductsList
+    environment:
+      productsTableName: ${env:PRODUCTS_TABLE_NAME}
+      stocksTableName: ${env:STOCKS_TABLE_NAME}
     events:
       - http:
           method: get
@@ -23,6 +42,9 @@ functions:
           cors: true
   product:
     handler: functions/get-product-by-id/get-product-by-id.getProductById
+    environment:
+      productsTableName: ${env:PRODUCTS_TABLE_NAME}
+      stocksTableName: ${env:STOCKS_TABLE_NAME}
     events:
       - http:
           method: get
@@ -32,3 +54,42 @@ functions:
             parameters:
               paths:
                 productId: true
+  createProduct:
+    handler: functions/create-product/create-product.createProduct
+    environment:
+      productsTableName: ${env:PRODUCTS_TABLE_NAME}
+      stocksTableName: ${env:STOCKS_TABLE_NAME}
+    events:
+      - http:
+          method: post
+          path: /products
+          cors: true
+
+resources:
+  Resources:
+    productsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:PRODUCTS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    stocksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:STOCKS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: product_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: product_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
