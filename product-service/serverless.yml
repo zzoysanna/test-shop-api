@@ -15,6 +15,13 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-central-1
+
+  environment:
+    productsTableName: ${env:PRODUCTS_TABLE_NAME}
+    stocksTableName: ${env:STOCKS_TABLE_NAME}
+    topicArn:
+      Ref: createProductTopic
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -28,13 +35,18 @@ provider:
       Resource:
         - "Fn::GetAtt": [ productsTable, Arn ]
         - "Fn::GetAtt": [ stocksTable, Arn ]
+    - Effect: Allow
+      Action: "sqs:*"
+      Resource:
+        - "Fn::GetAtt": [ catalogItemsQueue, Arn ]
+    - Effect: Allow
+      Action: "sns:*"
+      Resource:
+        Ref: createProductTopic
 
 functions:
   products:
     handler: functions/get-products-list/get-products-list.getProductsList
-    environment:
-      productsTableName: ${env:PRODUCTS_TABLE_NAME}
-      stocksTableName: ${env:STOCKS_TABLE_NAME}
     events:
       - http:
           method: get
@@ -42,9 +54,6 @@ functions:
           cors: true
   product:
     handler: functions/get-product-by-id/get-product-by-id.getProductById
-    environment:
-      productsTableName: ${env:PRODUCTS_TABLE_NAME}
-      stocksTableName: ${env:STOCKS_TABLE_NAME}
     events:
       - http:
           method: get
@@ -56,14 +65,20 @@ functions:
                 productId: true
   createProduct:
     handler: functions/create-product/create-product.createProduct
-    environment:
-      productsTableName: ${env:PRODUCTS_TABLE_NAME}
-      stocksTableName: ${env:STOCKS_TABLE_NAME}
     events:
       - http:
           method: post
           path: /products
           cors: true
+  catalogBatchProcess:
+    handler: functions/catalog-batch-process/catalog-batch-process.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+            - catalogItemsQueue
+            - Arn
 
 resources:
   Resources:
@@ -93,3 +108,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${env:QUEUE_NAME}
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${env:SNS_TOPIC_NAME}
+    createProductTopicSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${env:EMAIL}
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+

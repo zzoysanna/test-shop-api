@@ -1,0 +1,17 @@
+# package directories
+node_modules
+import-service/node_modules
+product-service/node_modules
+jspm_packages
+
+# Serverless directories
+import-service/.serverless
+product-service/.serverless
+
+# Webpack directories
+.webpack
+import-service/.env
+product-service/.env
+
+.DS_Store
+.idea/*
