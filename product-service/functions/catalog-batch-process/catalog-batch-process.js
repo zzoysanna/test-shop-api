@@ -31,7 +31,7 @@ export const catalogBatchProcess = async (event, context, callback) => {
 const sendEmail = (sns, item) => {
     sns.publish({
         Subject: 'New products uploaded',
-        Message: JSON.stringify(item),
+        Message: item,
         TopicArn: process.env.topicArn
     }, () => {
         console.log('send email', item);

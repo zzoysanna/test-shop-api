@@ -123,4 +123,14 @@ resources:
         Protocol: email
         TopicArn:
           Ref: createProductTopic
+    filteredSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${env:EMAIL_FOR_FILTERED}
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        FilterPolicyScope: MessageBody
+        FilterPolicy: '{"count": [{"numeric": [">", 500]}]}'
+
 
