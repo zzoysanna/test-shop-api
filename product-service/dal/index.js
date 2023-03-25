@@ -45,10 +45,14 @@ const joinData = (products, stocks) => {
 export const saveItem = (title, description, price, count) => {
     const id = uuidv4();
     if(!title || !description) {
-        throw new Error('Data is incorrect: title and description should not be empty');
+        const error = new Error('Data is incorrect: title and description should not be empty');
+        error.statusCode = 400;
+        throw error;
     }
     if(count < 0 || price <= 0) {
-        throw new Error('Data is incorrect: price and count should be more then 0')
+        const error = new Error('Data is incorrect: price and count should be more then 0');
+        error.statusCode = 400;
+        throw error;
     }
     return dynamo.transactWrite({
         TransactItems: [
