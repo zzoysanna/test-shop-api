@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="492ba312-9f22-40ef-9c96-881e6715e611" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/authorization-service/functions/basic-authorizer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/functions/catalog-batch-process/catalog-batch-process.js" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/functions/catalog-batch-process/catalog-batch-process.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/serverless.yml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/serverless.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/import-service/serverless.yml" beforeDir="false" afterPath="$PROJECT_DIR$/import-service/serverless.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/dal/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/dal/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +59,9 @@
       <workItem from="1679166237011" duration="19395000" />
       <workItem from="1679245529460" duration="11050000" />
       <workItem from="1679259375988" duration="7589000" />
-      <workItem from="1679300255896" duration="1292000" />
+      <workItem from="1679300255896" duration="1432000" />
+      <workItem from="1679348758918" duration="13754000" />
+      <workItem from="1679737834971" duration="2941000" />
     </task>
     <servers />
   </component>

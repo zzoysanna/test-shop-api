@@ -44,6 +44,11 @@ functions:
             parameters:
               querystrings:
                 name: true
+          authorizer:
+            arn: "arn:aws:lambda:eu-central-1:602132075936:function:authorization-service-dev-basicAuthorizer"
+            type: "request"
+            name: basicAuthorizer
+            resultTtlInSeconds: 0
   importFileParser:
     handler: functions/import-file-parser/import-file-parser.importFileParser
     environment:
