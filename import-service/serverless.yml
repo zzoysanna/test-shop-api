@@ -25,6 +25,10 @@ provider:
       Action: "s3:*"
       Resource:
         - "arn:aws:s3:::shop-cloudfront-imported/*"
+    - Effect: Allow
+      Action: "sqs:*"
+      Resource:
+        - "arn:aws:sqs:eu-central-1:602132075936:products-queue"
 
 functions:
   importProducts:
@@ -44,6 +48,7 @@ functions:
     handler: functions/import-file-parser/import-file-parser.importFileParser
     environment:
       bucket: ${env:BUCKET_NAME}
+      sqsName: ${env:QUEUE_NAME}
     events:
       - s3:
           bucket: ${env:BUCKET_NAME}
@@ -51,4 +56,3 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-
