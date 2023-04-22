@@ -1,8 +1,9 @@
 import AWS from "aws-sdk";
 import csv from "csvtojson";
 
-export const importFileParser = async (event) => {
-    const s3 = new AWS.S3({region: "eu-central-1"});
+export const importFileParser = async (event, context, callback) => {
+    const s3 = new AWS.S3();
+    const sqs = new AWS.SQS()
     let res = [];
 
     try {
@@ -28,10 +29,25 @@ export const importFileParser = async (event) => {
                 .then(() => s3.copyObject(copyParams).promise())
                 .then(() => s3.deleteObject(params).promise())
 
-            res.forEach((item, i) => console.log('item ', i, ': ', item))
-        }
-        return {
-            statusCode: 202,
+            sqs.getQueueUrl({QueueName: process.env.sqsName}, (err, data) => {
+                if (data) {
+                    res.forEach(item => {
+                        sqs.sendMessage({
+                            QueueUrl: data.QueueUrl,
+                            MessageBody: JSON.stringify(item)
+                        }, (error, data) => {
+                            console.log('message for ', item)
+                        })
+                    })
+                }
+            });
+
+            callback(null, {
+                statusCode: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
         }
     } catch (err) {
         return {
