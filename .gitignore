@@ -7,12 +7,17 @@ jspm_packages
 # Serverless directories
 import-service/.serverless
 product-service/.serverless
+authorization-service/.serverless/
+bff-service/.elasticbeanstalk
 
 # Webpack directories
 .webpack
 import-service/.env
 product-service/.env
+authorization-service/.env
+bff-service/.env
 
 .DS_Store
 .idea/
 .idea/workspace.xml
+
